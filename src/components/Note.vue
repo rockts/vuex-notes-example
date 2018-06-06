@@ -1,17 +1,19 @@
 <template lang="html">
   <div class="item">
     <div class="meta">
-      {{ 'updated' }}
+      {{ updated(entity) }}
     </div>
     <div class="content">
-      <div class="header">
-        {{ 'header' || '新建笔记' }}
+      <div class="header" v-on:click="open = !open">
+        {{ header(entity) || '新建笔记' }}
       </div>
       <div class="extra">
-      <editor>
+      <editor v-bind:entity="entity" v-if="open">
       </editor>
-      {{ 'words' }} 字
-      <i class="right floated trash alternate outline icon">
+      {{ words(entity) }} 字
+      <i class="right floated trash alternate outline icon"
+        v-on:click="destroy(entity)"
+        v-if="open">
       </i>
     </div>
     </div>
@@ -21,7 +23,28 @@
 
 <script>
 import Editor from './Editor'
+import { mapGetters, mapActions } from 'vuex'
 export default {
+  computed: {
+    ...mapGetters([
+      'updated',
+      'words',
+      'header'
+    ])
+  },
+  data () {
+    return {
+      open: false
+    }
+  },
+  props: [
+    'entity'
+  ],
+  methods: {
+    ...mapActions([
+      'destroy'
+    ])
+  },
   components: {
     Editor
   }
